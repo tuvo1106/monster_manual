@@ -15,6 +15,13 @@ app.get("/api/v1/monsters", (req, res) => {
     .json({ status: "success", results: monsters.length, data: monsters })
 })
 
+app.get("/api/v1/monsters/:name", (req, res) => {
+  // req.params is where id is stored
+  // add question mark to make it optional /:id?
+  monster = monsters.find(e => e.name === req.params.name)
+  res.status(200).json({ status: "success", data: monster })
+})
+
 app.post("/api/v1/monsters", (req, res) => {
   res.status(201).json({ status: "success" })
 })
