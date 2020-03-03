@@ -26,6 +26,14 @@ app.post("/api/v1/monsters", (req, res) => {
   res.status(201).json({ status: "success" })
 })
 
+app.patch("/api/v1/monsters/:id", (req, res) => {
+  res.status(200).json({ status: "success", data: "modified" })
+})
+
+app.delete("/api/v1/monsters/:id", (req, res) => {
+  res.status(204).json({ status: "success", data: null })
+})
+
 const port = 3000
 app.listen(port, () => {
   console.log(`App running on ${port}`.yellow.bold)
