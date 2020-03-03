@@ -9,30 +9,41 @@ const monsters = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/bestiary.json`)
 )
 
-app.get("/api/v1/monsters", (req, res) => {
+const getAllMonsters = (req, res) => {
   res
     .status(200)
     .json({ status: "success", results: monsters.length, data: monsters })
-})
+}
 
-app.get("/api/v1/monsters/:name", (req, res) => {
+const getMonster = (req, res) => {
   // req.params is where id is stored
   // add question mark to make it optional /:id?
   monster = monsters.find(e => e.name === req.params.name)
   res.status(200).json({ status: "success", data: monster })
-})
+}
 
-app.post("/api/v1/monsters", (req, res) => {
+const createMonster = (req, res) => {
   res.status(201).json({ status: "success" })
-})
+}
 
-app.patch("/api/v1/monsters/:id", (req, res) => {
+const updateMonster = (req, res) => {
   res.status(200).json({ status: "success", data: "modified" })
-})
+}
 
-app.delete("/api/v1/monsters/:id", (req, res) => {
+const deleteMonster = (req, res) => {
   res.status(204).json({ status: "success", data: null })
-})
+}
+
+app
+  .route("/api/v1/monsters")
+  .get(getAllMonsters)
+  .post(createMonster)
+
+app
+  .route("/api/v1/monsters/:name")
+  .get(getMonster)
+  .patch(updateMonster)
+  .delete(deleteMonster)
 
 const port = 3000
 app.listen(port, () => {
