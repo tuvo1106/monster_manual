@@ -1,0 +1,25 @@
+{
+  "name": "monster_manual",
+  "version": "1.0.0",
+  "description": "a RESTful api for monsters in the dnd universe",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuvo1106/monster_manual.git"
+  },
+  "author": "Tu Vo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tuvo1106/monster_manual/issues"
+  },
+  "homepage": "https://github.com/tuvo1106/monster_manual#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
+  }
+}
