@@ -11,6 +11,9 @@ const app = express()
 app.use(morgan("dev"))
 app.use(express.json())
 
+// serve static files
+app.use(express.static(`${__dirname}/public/`))
+
 // routes
 app.use("/api/v1/monsters", monsterRouter)
 app.use("/api/v1/users", userRouter)
