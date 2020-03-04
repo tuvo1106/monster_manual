@@ -5,10 +5,14 @@ const {
   getMonster,
   createMonster,
   updateMonster,
-  deleteMonster
+  deleteMonster,
+  checkName
 } = require("./../controllers/monsterController")
 
 const router = express.Router()
+
+// param middleware
+router.param("name", checkName)
 
 router
   .route("/")

@@ -4,6 +4,17 @@ const monsters = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/bestiary.json`)
 )
 
+exports.checkName = (req, res, next, val) => {
+  monster = monsters.find(e => e.name === val)
+  if (!monster) {
+    return res.status(404).json({
+      status: "fail",
+      message: "invalid name"
+    })
+  }
+  next()
+}
+
 exports.getAllMonsters = (req, res) => {
   res
     .status(200)
