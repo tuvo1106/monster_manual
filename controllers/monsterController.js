@@ -15,6 +15,17 @@ exports.checkName = (req, res, next, val) => {
   next()
 }
 
+exports.checkBody = (req, res, next) => {
+  const { name } = req.body
+  if (!name) {
+    return res.status(404).json({
+      status: "fail",
+      message: "missing name"
+    })
+  }
+  next()
+}
+
 exports.getAllMonsters = (req, res) => {
   res
     .status(200)

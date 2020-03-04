@@ -6,7 +6,8 @@ const {
   createMonster,
   updateMonster,
   deleteMonster,
-  checkName
+  checkName,
+  checkBody
 } = require("./../controllers/monsterController")
 
 const router = express.Router()
@@ -17,7 +18,7 @@ router.param("name", checkName)
 router
   .route("/")
   .get(getAllMonsters)
-  .post(createMonster)
+  .post(checkBody, createMonster)
 
 router
   .route("/:name")
