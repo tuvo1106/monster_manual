@@ -1,51 +1,72 @@
-const fs = require("fs")
+const Monster = require("../models/monsterModel")
 
-const monsters = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/bestiary.json`)
-)
+// local file storage
+// const fs = require("fs")
+// const monsters = JSON.parse(
+//   fs.readFileSync(`${__dirname}/../dev-data/bestiary.json`)
+// )
 
-exports.checkName = (req, res, next, val) => {
-  monster = monsters.find(e => e.name === val)
-  if (!monster) {
-    return res.status(404).json({
-      status: "fail",
-      message: "invalid name"
+exports.getAllMonsters = async (req, res) => {
+  try {
+    const monsters = await Monster.find()
+    res
+      .status(200)
+      .json({ status: "success", results: monsters.length, data: monsters })
+  } catch (err) {
+    res.status(404).json({
+      status: "failure",
+      message: err
     })
   }
-  next()
 }
 
-exports.checkBody = (req, res, next) => {
-  const { name } = req.body
-  if (!name) {
-    return res.status(404).json({
-      status: "fail",
-      message: "missing name"
+exports.getMonster = async (req, res) => {
+  try {
+    const monster = await Monster.findById(req.params.id)
+    res.status(200).json({ status: "success", data: monster })
+  } catch (err) {
+    res.status(404).json({
+      status: "failure",
+      message: err
     })
   }
-  next()
 }
 
-exports.getAllMonsters = (req, res) => {
-  res
-    .status(200)
-    .json({ status: "success", results: monsters.length, data: monsters })
+exports.createMonster = async (req, res) => {
+  try {
+    const newMonster = await Monster.create(req.body)
+    res.status(201).json({ status: "success", data: newMonster })
+  } catch (err) {
+    res.status(400).json({
+      status: "failure",
+      message: err
+    })
+  }
 }
 
-exports.getMonster = (req, res) => {
-  // add question mark to make it optional /:name?
-  monster = monsters.find(e => e.name === req.params.name)
-  res.status(200).json({ status: "success", data: monster })
+exports.updateMonster = async (req, res) => {
+  try {
+    const monster = await Monster.findByIdAndUpdate(req.params.id, req.body, {
+      // return new document
+      new: true
+    })
+    res.status(200).json({ status: "success", data: monster })
+  } catch (err) {
+    res.status(400).json({
+      status: "failure",
+      message: err
+    })
+  }
 }
 
-exports.createMonster = (req, res) => {
-  res.status(201).json({ status: "success" })
-}
-
-exports.updateMonster = (req, res) => {
-  res.status(200).json({ status: "success", data: "modified" })
-}
-
-exports.deleteMonster = (req, res) => {
-  res.status(204).json({ status: "success", data: null })
+exports.deleteMonster = async (req, res) => {
+  try {
+    await Monster.findByIdAndDelete(req.params.id)
+    res.status(204).json({ status: "success", data: null })
+  } catch (err) {
+    res.status(400).json({
+      status: "failure",
+      message: err
+    })
+  }
 }
