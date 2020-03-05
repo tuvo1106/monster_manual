@@ -5,23 +5,19 @@ const {
   getMonster,
   createMonster,
   updateMonster,
-  deleteMonster,
-  checkName,
-  checkBody
+  deleteMonster
 } = require("./../controllers/monsterController")
 
 const router = express.Router()
 
-// param middleware
-router.param("name", checkName)
-
 router
   .route("/")
   .get(getAllMonsters)
-  .post(checkBody, createMonster)
+  .post(createMonster)
 
 router
-  .route("/:name")
+  .route("/:id")
+  // add question mark to make it optional /:id?
   .get(getMonster)
   .patch(updateMonster)
   .delete(deleteMonster)
