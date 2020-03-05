@@ -3,13 +3,19 @@ const Monster = require("../models/monsterModel")
 exports.getAllMonsters = async (req, res) => {
   try {
     // passing in req.query will apply filter, however we want to
-    // exclude certain fields for pagination, sorting, etc...
+    // exclude certain fields for pagination, sorting, limiting, etc...
     const queryObj = {
       ...req.query
     }
     const excludedFields = ["page", "sort", "limit", "fields"]
     excludedFields.forEach(e => delete queryObj[e])
-    const monsters = await Monster.find(queryObj)
+
+    // advanced filtering for [gte, gt, lte, lt]
+    let queryStr = JSON.stringify(queryObj)
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+
+    const query = Monster.find(JSON.parse(queryStr))
+    const monsters = await query
     res
       .status(200)
       .json({ status: "success", results: monsters.length, data: monsters })
