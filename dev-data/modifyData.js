@@ -4,7 +4,7 @@ const colors = require("colors")
 const dotenv = require("dotenv")
 dotenv.config({ path: "./config.env" })
 
-const Monster = require("./../models/monsterModel")
+const Monster = require("../models/monsterModel")
 
 const { MONGO_CONNECTION_STR, MONGO_PSW } = process.env
 const mongoDB = MONGO_CONNECTION_STR.replace("<PASSWORD>", MONGO_PSW)
@@ -20,7 +20,7 @@ mongoose
     console.log("MongoDB connected.".blue)
   })
 
-// read JSON
+// read JSON, file will be hidden in production
 const monsters = JSON.parse(
   fs.readFileSync(`${__dirname}/bestiary.json`, "utf-8")
 )
@@ -30,10 +30,10 @@ const importData = async () => {
   try {
     await Monster.create(monsters)
     console.log("Data sucessfully loaded.")
-    process.exit()
   } catch (err) {
     console.log(err)
   }
+  process.exit()
 }
 
 // delete all data from DB
@@ -41,10 +41,10 @@ const deleteData = async () => {
   try {
     await Monster.deleteMany()
     console.log("Data sucessfully deleted.")
-    process.exit()
   } catch (err) {
     console.log(err)
   }
+  process.exit()
 }
 
 // waits until mongoose is connected before executing import or delete
