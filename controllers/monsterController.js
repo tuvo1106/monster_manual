@@ -4,17 +4,34 @@ exports.getAllMonsters = async (req, res) => {
   try {
     // passing in req.query will apply filter, however we want to
     // exclude certain fields for pagination, sorting, limiting, etc...
-    const queryObj = {
-      ...req.query
-    }
+    const queryObj = { ...req.query }
     const excludedFields = ["page", "sort", "limit", "fields"]
     excludedFields.forEach(e => delete queryObj[e])
 
     // advanced filtering for [gte, gt, lte, lt]
     let queryStr = JSON.stringify(queryObj)
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+    let query = Monster.find(JSON.parse(queryStr))
 
-    const query = Monster.find(JSON.parse(queryStr))
+    // sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ")
+      query = query.sort(sortBy)
+    } else {
+      // default sort
+      query = query.sort("name")
+    }
+
+    // field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ')
+      query = query.select(fields)
+    } else {
+      // - = exclude
+      query = query.select('-__v')
+    }
+
+    // execute query
     const monsters = await query
     res
       .status(200)
