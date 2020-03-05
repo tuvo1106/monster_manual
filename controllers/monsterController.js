@@ -1,11 +1,5 @@
 const Monster = require("../models/monsterModel")
 
-// local file storage
-// const fs = require("fs")
-// const monsters = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../dev-data/bestiary.json`)
-// )
-
 exports.getAllMonsters = async (req, res) => {
   try {
     const monsters = await Monster.find()
