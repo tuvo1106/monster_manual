@@ -2,7 +2,14 @@ const Monster = require("../models/monsterModel")
 
 exports.getAllMonsters = async (req, res) => {
   try {
-    const monsters = await Monster.find()
+    // passing in req.query will apply filter, however we want to
+    // exclude certain fields for pagination, sorting, etc...
+    const queryObj = {
+      ...req.query
+    }
+    const excludedFields = ["page", "sort", "limit", "fields"]
+    excludedFields.forEach(e => delete queryObj[e])
+    const monsters = await Monster.find(queryObj)
     res
       .status(200)
       .json({ status: "success", results: monsters.length, data: monsters })
