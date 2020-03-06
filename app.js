@@ -2,8 +2,10 @@ const express = require("express")
 const colors = require("colors")
 const morgan = require("morgan")
 
+const AppError = require("./utils/appError")
 const monsterRouter = require("./routes/monsterRoutes")
 const userRouter = require("./routes/userRoutes")
+const globalErrorHandler = require("./controllers/errorController")
 
 const app = express()
 
@@ -20,21 +22,11 @@ app.use("/api/v1/users", userRouter)
 
 // undefined routes
 app.all("*", (req, res, next) => {
-  const err = new Error(`Can't find ${req.originalUrl} on this server!`)
-  err.status = "fail"
-  err.statusCode = 404
-  next(err)
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))
 })
 
 // global error handling middleware
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500
-  err.status = err.status || "error"
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message
-  })
-})
+app.use(globalErrorHandler)
 
 // start server
 module.exports = app
