@@ -24,11 +24,24 @@ exports.getAllMonsters = async (req, res) => {
 
     // field limiting
     if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ')
+      const fields = req.query.fields.split(",").join(" ")
       query = query.select(fields)
     } else {
       // - = exclude
-      query = query.select('-__v')
+      query = query.select("-__v")
+    }
+
+    // pagination
+    // n * 1 converts String to Integer
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 100
+    const skip = (page - 1) * limit
+    // page=3&limit=10, 1-10, page 1, 11-20, page 2...
+    query = query.skip(skip).limit(limit)
+
+    if (req.query.page) {
+      const numMonsters = await Monster.countDocuments()
+      if (skip >= numMonsters) throw new Error("This page does not exist")
     }
 
     // execute query
