@@ -1,6 +1,7 @@
 const Monster = require("../models/monsterModel")
 const APIFeatures = require("../utils/apiFeatures")
 const catchAsync = require("../utils/catchAsync")
+const AppError = require("../utils/appError")
 
 exports.getAllMonsters = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Monster.find(), req.query)
@@ -16,6 +17,7 @@ exports.getAllMonsters = catchAsync(async (req, res, next) => {
 
 exports.getMonster = catchAsync(async (req, res, next) => {
   const monster = await Monster.findById(req.params.id)
+  if (!monster) return next(new AppError("No tour found with this ID.", 404))
   res.status(200).json({ status: "success", data: monster })
 })
 
@@ -29,10 +31,12 @@ exports.updateMonster = catchAsync(async (req, res, next) => {
     // return new document
     new: true
   })
+  if (!monster) return next(new AppError("No tour found with this ID.", 404))
   res.status(200).json({ status: "success", data: monster })
 })
 
 exports.deleteMonster = catchAsync(async (req, res, next) => {
-  await Monster.findByIdAndDelete(req.params.id)
+  const monster = await Monster.findByIdAndDelete(req.params.id)
+  if (!monster) return next(new AppError("No tour found with this ID.", 404))
   res.status(204).json({ status: "success", data: null })
 })
