@@ -1,6 +1,7 @@
 const express = require("express")
 const colors = require("colors")
 const morgan = require("morgan")
+const rateLimit = require("express-rate-limit")
 
 const AppError = require("./utils/appError")
 const monsterRouter = require("./routes/monsterRoutes")
@@ -8,6 +9,14 @@ const userRouter = require("./routes/userRoutes")
 const globalErrorHandler = require("./controllers/errorController")
 
 const app = express()
+
+// rate limit of 100 requests per hour
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP, please try again in an hour."
+})
+app.use("/api", limiter)
 
 // middleware
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"))
