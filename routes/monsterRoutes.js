@@ -7,19 +7,20 @@ const {
   updateMonster,
   deleteMonster
 } = require("./../controllers/monsterController")
+const { protect } = require("../controllers/authController")
 
 const router = express.Router()
 
 router
   .route("/")
   .get(getAllMonsters)
-  .post(createMonster)
+  .post(protect, createMonster)
 
 router
   .route("/:id")
   // add question mark to make it optional /:id?
   .get(getMonster)
-  .patch(updateMonster)
-  .delete(deleteMonster)
+  .patch(protect, updateMonster)
+  .delete(protect, deleteMonster)
 
 module.exports = router
