@@ -3,6 +3,9 @@ const colors = require("colors")
 const morgan = require("morgan")
 const rateLimit = require("express-rate-limit")
 const helmet = require("helmet")
+const mongoSanitize = require("express-mongo-sanitize")
+const xss = require("xss-clean")
+const hpp = require("hpp")
 
 const AppError = require("./utils/appError")
 const monsterRouter = require("./routes/monsterRoutes")
@@ -24,7 +27,18 @@ app.use(helmet())
 
 // logging middleware
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"))
-app.use(express.json())
+
+// json
+app.use(express.json({ limit: "10kb" }))
+
+// for nosql injections
+app.use(mongoSanitize())
+
+// data sanitation
+app.use(xss())
+
+// prevent parameter pollution
+app.use(hpp())
 
 // serve static files
 app.use(express.static(`${__dirname}/public/`))
