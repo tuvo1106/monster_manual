@@ -2,6 +2,7 @@ const express = require("express")
 const colors = require("colors")
 const morgan = require("morgan")
 const rateLimit = require("express-rate-limit")
+const helmet = require("helmet")
 
 const AppError = require("./utils/appError")
 const monsterRouter = require("./routes/monsterRoutes")
@@ -18,7 +19,10 @@ const limiter = rateLimit({
 })
 app.use("/api", limiter)
 
-// middleware
+// helmet for headers
+app.use(helmet())
+
+// logging middleware
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"))
 app.use(express.json())
 
